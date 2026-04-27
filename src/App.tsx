@@ -198,7 +198,7 @@ export default function App() {
             <div className="w-4 h-10 bg-orange-600"></div>
             <h1 className="text-3xl font-black uppercase tracking-tighter leading-none">Fiskars Strategic Portfolio</h1>
           </div>
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] ml-7">BCG Matrix Analysis • FY2026 Strategic Review</p>
+          <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] ml-7">BCG Matrix Analysis</p>
         </div>
         <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-4">
           <div className="flex items-center gap-3">
@@ -237,13 +237,6 @@ export default function App() {
                   <BarChart3 className="w-5 h-5 text-orange-500" />
                   <h2 className="text-sm font-black uppercase tracking-widest shrink-0">Product Line Inventory</h2>
                 </div>
-                <button 
-                  onClick={addProduct}
-                  className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-colors shrink-0"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add SKU
-                </button>
               </div>
               
               <div className="relative w-full">
@@ -335,6 +328,15 @@ export default function App() {
                 </tbody>
               </table>
             </div>
+            <div className="p-4 border-t-2 border-slate-900 flex justify-center bg-slate-50">
+              <button 
+                onClick={addProduct}
+                className="bg-slate-900 hover:bg-black text-white px-8 py-4 text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[4px_4px_0px_0px_rgba(234,88,12,1)]"
+              >
+                <Plus className="w-4 h-4 text-orange-500" />
+                Add Another SKU
+              </button>
+            </div>
           </div>
         </section>
 
@@ -372,41 +374,59 @@ export default function App() {
 
              {/* PLOTTED CONTENT */}
              <div className="relative w-full h-full p-20 z-40">
-               {analysis.map((p, i) => {
-                 const x = 50 - (Math.min(Math.max(p.rms - 1, -1), 4) / 4) * 50;
-                 const y = 100 - (Math.min(Math.max(p.marketGrowth, 0), 20) / 20) * 100;
-                 const cat = CATEGORIES[p.category];
+                {analysis.map((p, i) => {
+                  const x = 50 - (Math.min(Math.max(p.rms - 1, -1), 4) / 4) * 50;
+                  const y = 100 - (Math.min(Math.max(p.marketGrowth, 0), 20) / 20) * 100;
+                  const cat = CATEGORIES[p.category];
 
-                 return (
-                   <motion.div 
-                     key={p.id}
-                     className={`absolute ${selectedProductId === p.id ? 'z-[100]' : 'z-20'} group cursor-pointer`}
-                     style={{ left: `${x}%`, top: `${y}%` }}
-                     initial={{ scale: 0, opacity: 0 }}
-                     animate={{ 
-                       scale: selectedProductId === p.id ? 1.2 : 1, 
-                       opacity: 1 
-                     }}
-                     onClick={() => {
-                       setSelectedProductId(p.id);
-                       document.getElementById(`row-${p.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                     }}
-                     transition={{ type: 'spring', damping: 15, delay: i * 0.05 }}
-                   >
-                     <div className="relative -translate-x-1/2 -translate-y-1/2">
-                       <div className={`bg-white border-2 border-slate-900 p-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] ${selectedProductId === p.id ? 'border-orange-600 shadow-[6px_6px_0px_0px_rgba(234,88,12,1)]' : 'group-hover:shadow-[6px_6px_0px_0px_rgba(234,88,12,1)]'} transition-all min-w-[120px]`}>
-                         <div className="flex items-center gap-2 mb-1">
-                           <cat.icon className={`w-3 h-3 ${cat.color}`} />
-                           <span className="text-[10px] font-black uppercase truncate max-w-[100px]">{p.name || 'SKU_EMPTY'}</span>
-                         </div>
-                         <div className="flex justify-between items-end border-t border-slate-100 pt-1">
-                            <div className="text-[8px] font-bold text-slate-400">RMS: <span className="text-slate-900">{p.rms.toFixed(2)}x</span></div>
-                            <div className="text-[8px] font-bold text-slate-400">MGR: <span className="text-slate-900">{p.marketGrowth}%</span></div>
-                         </div>
-                       </div>
-                       
+                  // Tooltip positioning logic
+                  const isTop = y < 30;
+                  const isLeft = x < 25;
+                  const isRight = x > 75;
+
+                  let tooltipClasses = isTop ? 'top-full mt-4' : 'bottom-full mb-4';
+                  let arrowClasses = isTop 
+                    ? 'bottom-full mb-[-2px] border-b-orange-600 border-t-transparent' 
+                    : 'top-full mt-[-2px] border-t-orange-600 border-b-transparent';
+                  
+                  if (isLeft) {
+                    tooltipClasses += ' left-0 translate-x-0';
+                  } else if (isRight) {
+                    tooltipClasses += ' right-0 translate-x-0';
+                  } else {
+                    tooltipClasses += ' left-1/2 -translate-x-1/2';
+                  }
+
+                  return (
+                    <motion.div 
+                      key={p.id}
+                      className={`absolute ${selectedProductId === p.id ? 'z-[100]' : 'z-20'} group cursor-pointer`}
+                      style={{ left: `${x}%`, top: `${y}%` }}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ 
+                        scale: selectedProductId === p.id ? 1.2 : 1, 
+                        opacity: 1 
+                      }}
+                      onClick={() => {
+                        setSelectedProductId(p.id);
+                        document.getElementById(`row-${p.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}
+                      transition={{ type: 'spring', damping: 15, delay: i * 0.05 }}
+                    >
+                      <div className="relative -translate-x-1/2 -translate-y-1/2">
+                        <div className={`bg-white border-2 border-slate-900 p-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] ${selectedProductId === p.id ? 'border-orange-600 shadow-[6px_6px_0px_0px_rgba(234,88,12,1)]' : 'group-hover:shadow-[6px_6px_0px_0px_rgba(234,88,12,1)]'} transition-all min-w-[120px]`}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <cat.icon className={`w-3 h-3 ${cat.color}`} />
+                            <span className="text-[10px] font-black uppercase truncate max-w-[100px]">{p.name || 'SKU_EMPTY'}</span>
+                          </div>
+                          <div className="flex justify-between items-end border-t border-slate-100 pt-1">
+                             <div className="text-[8px] font-bold text-slate-400">RMS: <span className="text-slate-900">{p.rms.toFixed(2)}x</span></div>
+                             <div className="text-[8px] font-bold text-slate-400">MGR: <span className="text-slate-900">{p.marketGrowth}%</span></div>
+                          </div>
+                        </div>
+                        
                         {/* Full Details Tooltip */}
-                        <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-4 ${selectedProductId === p.id ? 'block' : 'hidden group-hover:block'} transition-opacity pointer-events-none z-[100]`}>
+                        <div className={`absolute ${tooltipClasses} ${selectedProductId === p.id ? 'block' : 'hidden group-hover:block'} transition-opacity pointer-events-none z-[100]`}>
                           <div className="bg-slate-900 text-white p-3 border-2 border-orange-600 shadow-2xl min-w-[200px]">
                             <div className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1 border-b border-slate-700 pb-1 italic">SKU Detailed Analysis</div>
                             <div className="space-y-1 mt-2">
@@ -417,14 +437,14 @@ export default function App() {
                               <div className="flex justify-between text-[10px] font-mono"><span className="text-slate-400">MKT_GROWTH:</span> <span>{p.marketGrowth}%</span></div>
                             </div>
                           </div>
-                          <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-orange-600 mx-auto -mt-[2px]" />
+                          <div className={`w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] ${arrowClasses} ${isLeft ? 'ml-4' : isRight ? 'mr-4 ml-auto' : 'mx-auto'}`} />
                         </div>
 
-                       <div className={`absolute -top-1 -right-1 w-2 h-2 bg-orange-600 rounded-full animate-pulse ${selectedProductId === p.id ? 'block' : 'hidden group-hover:block'}`} />
-                     </div>
-                   </motion.div>
-                 );
-               })}
+                        <div className={`absolute -top-1 -right-1 w-2 h-2 bg-orange-600 rounded-full animate-pulse ${selectedProductId === p.id ? 'block' : 'hidden group-hover:block'}`} />
+                      </div>
+                    </motion.div>
+                  );
+                })}
              </div>
           </div>
           
