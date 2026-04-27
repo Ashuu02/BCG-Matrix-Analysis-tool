@@ -379,6 +379,13 @@ export default function App() {
                   const y = 100 - (Math.min(Math.max(p.marketGrowth, 0), 20) / 20) * 100;
                   const cat = CATEGORIES[p.category];
 
+                  // Revenue-based scaling
+                  const maxRevenue = Math.max(...products.map(pr => pr.revenue), 1000000);
+                  const minRevenue = Math.min(...products.map(pr => pr.revenue), 0);
+                  const revenueRatio = (p.revenue - minRevenue) / (maxRevenue - minRevenue || 1);
+                  // Scale from 0.8 to 1.15 to keep it from getting too large/cluttered
+                  const revenueScale = 0.8 + (revenueRatio * 0.35);
+
                   // Tooltip positioning logic
                   const isTop = y < 30;
                   const isLeft = x < 25;
@@ -404,7 +411,7 @@ export default function App() {
                       style={{ left: `${x}%`, top: `${y}%` }}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ 
-                        scale: selectedProductId === p.id ? 1.2 : 1, 
+                        scale: (selectedProductId === p.id ? 1.2 : 1) * revenueScale, 
                         opacity: 1 
                       }}
                       onClick={() => {
