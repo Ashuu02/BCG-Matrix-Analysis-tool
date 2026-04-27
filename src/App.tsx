@@ -172,7 +172,7 @@ export default function App() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", "fiskars_portfolio_analysis.csv");
+    link.setAttribute("download", "bcg_portfolio_analysis.csv");
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -196,7 +196,7 @@ export default function App() {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <div className="w-4 h-10 bg-orange-600"></div>
-            <h1 className="text-3xl font-black uppercase tracking-tighter leading-none">Fiskars Strategic Portfolio</h1>
+            <h1 className="text-3xl font-black uppercase tracking-tighter leading-none">Strategic Portfolio</h1>
           </div>
           <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] ml-7">BCG Matrix Analysis</p>
         </div>
@@ -484,7 +484,7 @@ export default function App() {
       <footer className="mt-16 pt-6 border-t-2 border-slate-200 text-[10px] text-slate-400 flex flex-col md:flex-row justify-between gap-4 items-center">
         <div className="font-bold uppercase tracking-widest italic flex items-center gap-2">
           <Info className="w-3 h-3" />
-          Confidential Strategic Resource • Fiskars Global Portfolio Management
+          Confidential Strategic Resource • Global Portfolio Management
         </div>
         <div className="font-mono flex items-center gap-4">
         </div>
