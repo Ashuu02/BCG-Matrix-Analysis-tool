@@ -1,0 +1,6 @@
+{
+  "name": "Fiskars Portfolio Analyst",
+  "description": "Strategic portfolio analysis tool for generating BCG Matrix reports, calculating market share, and providing SKU recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
